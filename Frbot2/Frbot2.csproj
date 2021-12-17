@@ -6,9 +6,34 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Token2 - Копировать.json" />
+    <None Remove="Resources\Token2.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Token2.json" />
+    <EmbeddedResource Include="Resources\Token2.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Telegram.Bot" Version="17.0.0" />
     <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

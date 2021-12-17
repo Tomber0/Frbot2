@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Reflection.Metadata;
 using System.Diagnostics;
+using System.Linq;
 using static Frbot2.Program;
 
 namespace Frbot2
@@ -35,15 +36,31 @@ namespace Frbot2
 
     public class ChatLibrary
     {
-        public List<Chat> Chats = new List<Chat>();
+        public List<CustomChat> Chats = new List<CustomChat>();
 
         public void AddNewChat(Chat chat)
         {
-            if (!Chats.Contains(chat))
+            if (!Chats.Any(e => e.Chat == chat))
             {
-                Chats.Add(chat);
+                Chats.Add(new CustomChat(chat));
             }
         }
+    }
+    public class CustomChat 
+    {
+
+        public Chat Chat;
+        public DateTime LastTime;
+
+        public CustomChat(Chat chat) 
+        {
+            Chat = chat;
+        }
+        public void UpdatelastTime() 
+        {
+            LastTime = DateTime.UtcNow;
+        } 
+
     }
     public class TelegramBot
     {
@@ -101,7 +118,11 @@ namespace Frbot2
         {
             foreach (var chat in _chats.Chats)
             {
-                await botClient.SendVideoAsync(chat, video: $"{videoId}");
+                if (chat.LastTime.Day != DateTime.UtcNow.Day)
+                {
+                    chat.LastTime = DateTime.UtcNow;
+                    await botClient.SendVideoAsync(chat.Chat, video: $"{videoId}");
+                }
             }
         }
     }
@@ -131,7 +152,7 @@ namespace Frbot2
                     break;
 
                 default:
-                    _response = $"gg";
+                    _response = $"";
 
                     break;
             }
@@ -195,7 +216,8 @@ namespace Frbot2
 
             watch.Start();
 
-            if (IsTodayFriday() && _lastDay != DateTime.UtcNow.Day)
+            if (IsTodayFriday()
+                )
             {
                 Console.WriteLine("friday");
                 SendMessage();
